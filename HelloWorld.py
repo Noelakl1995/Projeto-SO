@@ -11,8 +11,6 @@
 # Configuração do disco.
 # Valores são tomados do Disco Flexivel IBM 360KB
 # Disponivel no livro Modern Operating Systems (4a edição) pag. 256
-# print("insira sequencia de blocos")
-# blocos = list(map(int, input().split(" ")))
 num_cilindros = 40
 trilhas_por_cilindro = 2
 # A quantidade de trilhas por disco pode ser calculada
@@ -30,31 +28,26 @@ capacidade_disco = (setores_por_disco * bytes_por_setor) /1024 #Divisão para ob
 #Tomamos que o tamanho do bloco eh igual o tamanho do setor
 tamanho_bloco = bytes_por_setor
 blocos_por_trilha = setores_por_trilha
-#consideramos um disco cheio onde os blocos foram escritos sequencialmente em trilha, nesse caso: (0,1,2,3...719)
-#
-#
-#
-#
-#
-#
+#consideramos um disco cheio onde os blocos foram escritos sequencialmente na trilha, nesse caso: (0,1,2,3...719)
 #
 
 tempo_seek_adjascente = 6 #ms
 tempo_seek_avg = 77 #ms
 tempo_rotacao = 200 #ms
 tempo_transferencia = 22 #ms
-print ("Setores por disco: " + str (setores_por_disco))
-print ("Capacidade do disco: " + str (capacidade_disco))
 
 #latencia total = tempo de busca + tempo de rotação
 
-def latenciaAcessoUnicoBloco(blocoInicial, blocoDesejado):
+def latenciaAcessoBloco(blocoInicial, blocoDesejado):
+    
     diferencaDeTrails = trailDifference(blocoInicial,blocoDesejado)
+    tempoRotacaoDasTrails = tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
+
     if(diferencaDeTrails == 0):
-        return tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
+        return tempoRotacaoDasTrails
     elif (diferencaDeTrails == 1):
-        return tempo_rotacao + tempo_seek_adjascente
-    return tempo_rotacao + tempo_seek_avg
+        return tempoRotacaoDasTrails + tempo_seek_adjascente
+    return tempoRotacaoDasTrails + tempo_seek_avg
 
 def tempoRotacaoSameTrail(bloco1,bloco2):
     # Calcula o número do setor em que cada bloco está, são 9 setores por trail
@@ -78,9 +71,8 @@ def findBlockTrail(bloco):
 def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
-tempo = latenciaAcessoUnicoBloco(5, 4)
+tempo = latenciaAcessoBloco(19, 0)
 print(f"O tempo de latência foi: {tempo:.2f} ms")
-
-# To-Do:
-# Quando ocorre um seek para um novo cilindro,
-# há a possibilidade estarmos no bloco correto, eh necessario verificar esse caso
+# TODO: nao eh um bloco, são vaaaarios blocos
+# print("insira sequencia de blocos")
+# blocos = list(map(int, input().split(" ")))
