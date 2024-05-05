@@ -12,6 +12,8 @@
 # Valores são tomados do Disco Flexivel IBM 360KB
 # Disponivel no livro Modern Operating Systems (4a edição) pag. 256
 
+print("insira sequencia de blocos")
+blocos = list(map(int, input().split(" ")))
 
 num_cilindros = 40
 trilhas_por_cilindro = 2
@@ -39,4 +41,5 @@ tempo_transferencia = 22 #ms
 
 print ("Setores por disco: " + str (setores_por_disco))
 print ("Capacidade do disco: " + str (capacidade_disco))
+#latencia total = tempo de busca + tempo de rotação
 
