@@ -39,15 +39,22 @@ tempo_transferencia = 22 #ms
 #latencia total = tempo de busca + tempo de rotação
 
 def latenciaAcessoBloco(blocoInicial, blocoDesejado):
-    
-    diferencaDeTrails = trailDifference(blocoInicial,blocoDesejado)
-    tempoRotacaoDasTrails = tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
 
-    if(diferencaDeTrails == 0):
-        return tempoRotacaoDasTrails
+    diferencaDeTrails = trailDifference(blocoInicial, blocoDesejado)
+    tempoRotacaoDasTrails = tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
+    tempoIndividualBloco = int
+
+    if (diferencaDeTrails == 0):
+        tempoIndividualBloco = tempoRotacaoDasTrails
     elif (diferencaDeTrails == 1):
-        return tempoRotacaoDasTrails + tempo_seek_adjascente
-    return tempoRotacaoDasTrails + tempo_seek_avg
+        tempoIndividualBloco = tempoRotacaoDasTrails + tempo_seek_adjascente
+    else:
+        tempoIndividualBloco = tempoRotacaoDasTrails + tempo_seek_avg
+
+    print(f"O tempo de acesso do bloco {blocoDesejado} saindo do bloco {blocoInicial}"
+          f" foi de {tempoIndividualBloco:.2f} ms")
+    return tempoIndividualBloco
+
 
 def tempoRotacaoSameTrail(bloco1,bloco2):
     # Calcula o número do setor em que cada bloco está, são 9 setores por trail
@@ -71,8 +78,20 @@ def findBlockTrail(bloco):
 def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
-tempo = latenciaAcessoBloco(19, 0)
-print(f"O tempo de latência foi: {tempo:.2f} ms")
-# TODO: nao eh um bloco, são vaaaarios blocos
+tempo = latenciaAcessoBloco(1, 16)
+
+def latenciaAcessoTotal(lista_blocos):
+    latencia_total = 0 
+    bloco_inicial = 0
+    for bloco in lista_blocos:
+        latencia_total += latenciaAcessoBloco(bloco_inicial,bloco)
+        bloco_inicial = bloco
+    return latencia_total
+
+blocos = [1,9,1,9,12,20,4,20,4,3]
+tempo = latenciaAcessoTotal(blocos)
+print(f"O tempo total latência foi: {tempo:.2f} ms")
+
+# TODO: bug fix, insert blocks on entry
 # print("insira sequencia de blocos")
 # blocos = list(map(int, input().split(" ")))
