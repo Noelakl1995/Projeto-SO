@@ -49,19 +49,17 @@ print ("Capacidade do disco: " + str (capacidade_disco))
 #latencia total = tempo de busca + tempo de rotação
 
 def latenciaAcessoUnicoBloco(blocoInicial, blocoDesejado):
-    trails = trailDifference(blocoInicial,blocoDesejado)
-    if(trails == 0):
+    diferencaDeTrails = trailDifference(blocoInicial,blocoDesejado)
+    if(diferencaDeTrails == 0):
         return tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
-    elif (trails == 1):
+    elif (diferencaDeTrails == 1):
         return tempo_rotacao + tempo_seek_adjascente
     return tempo_rotacao + tempo_seek_avg
 
 def tempoRotacaoSameTrail(bloco1,bloco2):
-    #Temos 9 setores numa trail
-    # Calcula o número do setor em que cada bloco está
+    # Calcula o número do setor em que cada bloco está, são 9 setores por trail
     setor_bloco1 = bloco1 % setores_por_trilha
     setor_bloco2 = bloco2 % setores_por_trilha
-    diferenca_setores = int
     # Como a agulha só se move em uma direção, calcula a diferença entre os setores para 2 casos:
     # 1) Bloco desejado já passou da agulha, vai ser preciso dar outra volta
     # 2) bloco desejado está no sentido da agulha, podemos calcular normalmente
@@ -70,10 +68,8 @@ def tempoRotacaoSameTrail(bloco1,bloco2):
     else:
         diferenca_setores = setor_bloco2 - setor_bloco1
 
-    # Calcula o tempo médio de rotação necessário para acessar os blocos
     tempo_medio_rotacao = tempo_rotacao / setores_por_trilha
-
-    # Retorna o tempo necessário para acessar os blocos
+    # TODO: print de cada rotacao individual pode vir aqui
     return diferenca_setores * tempo_medio_rotacao
 
 def findBlockTrail(bloco):
@@ -88,8 +84,3 @@ print(f"O tempo de latência foi: {tempo:.2f} ms")
 # To-Do:
 # Quando ocorre um seek para um novo cilindro,
 # há a possibilidade estarmos no bloco correto, eh necessario verificar esse caso
-
-
-# DONe -> alem disso, tem que ser testado o caso que nao eh necessario uma rotacao completa na maior parte das vezes.
-# portanto, o tempo nao vai ser 200ms(que eh o tempo total para dar a volta de rotacao), mas sim
-# 200/n, onde n eh a quantidade de setores que precisam ser percorridos para o setor/bloco certo 
