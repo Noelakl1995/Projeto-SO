@@ -48,12 +48,26 @@ print ("Capacidade do disco: " + str (capacidade_disco))
 
 #latencia total = tempo de busca + tempo de rotação
 
+def latenciaAcessoUnicoBloco(blocoInicial, blocoDesejado):
+    trails = trailDifference(blocoInicial,blocoDesejado)
+    if(trails == 0):
+        return tempo_rotacao
+    elif (trails == 1):
+        return tempo_rotacao + tempo_seek_adjascente
+    return tempo_rotacao + tempo_seek_avg
+
 
 def findBlockTrail(bloco):
-    return (bloco//9)+1
+    return bloco//9
 
-def isInTrail(blocoAtual, blocoDesejado):
-    currentBlockTrail = findBlockTrail(blocoAtual)
-    nextBlockTrail = findBlockTrail(blocoDesejado)
-    return 
+def trailDifference(blocoAtual, blocoDesejado):
+    return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
+print ("O tempo de latencia foi: " + str (latenciaAcessoUnicoBloco(0,20))+ " ms")
+
+# To-Do:
+# Quando ocorre um seek para um novo cilindro,
+# há a possibilidade estarmos no bloco correto, eh necessario verificar esse caso
+# alem disso, tem que ser testado o caso que nao eh necessario uma rotacao completa na maior parte das vezes.
+# portanto, o tempo nao vai ser 200ms(que eh o tempo total para dar a volta de rotacao), mas sim
+# 200/n, onde n eh a quantidade de setores que precisam ser percorridos para o setor/bloco certo 
