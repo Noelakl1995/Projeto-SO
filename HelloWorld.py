@@ -51,11 +51,30 @@ print ("Capacidade do disco: " + str (capacidade_disco))
 def latenciaAcessoUnicoBloco(blocoInicial, blocoDesejado):
     trails = trailDifference(blocoInicial,blocoDesejado)
     if(trails == 0):
-        return tempo_rotacao
+        return tempoRotacaoSameTrail(blocoInicial, blocoDesejado)
     elif (trails == 1):
         return tempo_rotacao + tempo_seek_adjascente
     return tempo_rotacao + tempo_seek_avg
 
+def tempoRotacaoSameTrail(bloco1,bloco2):
+    #Temos 9 setores numa trail
+    # Calcula o número do setor em que cada bloco está
+    setor_bloco1 = bloco1 % setores_por_trilha
+    setor_bloco2 = bloco2 % setores_por_trilha
+    diferenca_setores = int
+    # Como a agulha só se move em uma direção, calcula a diferença entre os setores para 2 casos:
+    # 1) Bloco desejado já passou da agulha, vai ser preciso dar outra volta
+    # 2) bloco desejado está no sentido da agulha, podemos calcular normalmente
+    if (setor_bloco2 < setor_bloco1):
+        diferenca_setores = (setores_por_trilha - setor_bloco1)+setor_bloco2
+    else:
+        diferenca_setores = setor_bloco2 - setor_bloco1
+
+    # Calcula o tempo médio de rotação necessário para acessar os blocos
+    tempo_medio_rotacao = tempo_rotacao / setores_por_trilha
+
+    # Retorna o tempo necessário para acessar os blocos
+    return diferenca_setores * tempo_medio_rotacao
 
 def findBlockTrail(bloco):
     return bloco//9
@@ -63,11 +82,14 @@ def findBlockTrail(bloco):
 def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
-print ("O tempo de latencia foi: " + str (latenciaAcessoUnicoBloco(0,20))+ " ms")
+tempo = latenciaAcessoUnicoBloco(5, 4)
+print(f"O tempo de latência foi: {tempo:.2f} ms")
 
 # To-Do:
 # Quando ocorre um seek para um novo cilindro,
 # há a possibilidade estarmos no bloco correto, eh necessario verificar esse caso
-# alem disso, tem que ser testado o caso que nao eh necessario uma rotacao completa na maior parte das vezes.
+
+
+# DONe -> alem disso, tem que ser testado o caso que nao eh necessario uma rotacao completa na maior parte das vezes.
 # portanto, o tempo nao vai ser 200ms(que eh o tempo total para dar a volta de rotacao), mas sim
 # 200/n, onde n eh a quantidade de setores que precisam ser percorridos para o setor/bloco certo 
