@@ -34,7 +34,9 @@ tempo_seek_avg = 77 #ms
 tempo_rotacao = 200 #ms
 tempo_transferencia = 22 #ms
 
-#latencia total = tempo de busca + tempo de rotação
+bloco_inicial_disco = 0
+
+#latencia total = tempo de busca + tempo de rotação + tempo transferencia
 
 def latenciaAcessoBloco(blocoInicial, blocoDesejado,printResults):
 
@@ -71,20 +73,10 @@ def tempoRotacaoSameTrail(bloco1,bloco2):
     return diferenca_setores * tempo_medio_rotacao
 
 def findBlockTrail(bloco):
-    return bloco//9
+    return bloco//setores_por_trilha
 
 def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
-
-def latenciaAcessoTotal(lista_blocos):
-    latencia_total = 0 
-    #Consideramos que o disco começa no bloco 0 na sua inicianiliazição
-    bloco_inicial = 0
-    lista_blocos = sortBySSTF(lista_blocos,bloco_inicial)
-    for bloco in lista_blocos:
-        latencia_total += latenciaAcessoBloco(bloco_inicial,bloco,True)
-        bloco_inicial = bloco
-    return latencia_total
 
 def sortBySSTF(blocos, blocoInicial):
     aux = []
@@ -100,11 +92,22 @@ def sortBySSTF(blocos, blocoInicial):
         blocoInicial = aux[-1]
     return aux
 
+def latenciaAcessoTotal(lista_blocos):
+    latencia_total = 0 
+    #Consideramos que o disco começa no bloco 0 na sua inicianiliazição
+    bloco_inicial = bloco_inicial_disco
+    lista_blocos = sortBySSTF(lista_blocos,bloco_inicial)
+    for bloco in lista_blocos:
+        latencia_total += latenciaAcessoBloco(bloco_inicial,bloco,True)
+        bloco_inicial = bloco
+    return latencia_total
+
+
 
 print("Insira abaixo os blocos que deseja acessar, separados por espaço:")
-#blocos = list(map(int, input().split()))
-novo = "2 5 4 7 8 5 4 55 74 719 5 2 4 8 65 2 5 52 6 8 78 54 8 8 5 1 0 2 3 8 0"
-blocos = list(map(int, novo.split()))
+blocos = list(map(int, input().split()))
+#bloco_teste = "2 5 4 7 8 5 4 55 74 719 0 0 0 0 0 0 0 0 0 5 2 4 8 65 2 5 52 6 8 78 54 8 8 5 1 0 2 3 8 0"
+#blocos = list(map(int, bloco_teste.split()))
 
 if any(bloco >= setores_por_disco for bloco in blocos):
     print(f"Você tentou acessar um bloco que não existe no disco."
