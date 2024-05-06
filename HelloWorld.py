@@ -69,7 +69,7 @@ def tempoRotacaoSameTrail(bloco1,bloco2):
         diferenca_setores = setor_bloco2 - setor_bloco1
 
     tempo_medio_rotacao = tempo_rotacao / setores_por_trilha
-    # TODO: print de cada rotacao individual pode vir aqui
+    
     return diferenca_setores * tempo_medio_rotacao
 
 def findBlockTrail(bloco):
@@ -80,13 +80,15 @@ def trailDifference(blocoAtual, blocoDesejado):
 
 def latenciaAcessoTotal(lista_blocos):
     latencia_total = 0 
+    #Consideramos que o disco começa no bloco 0 na sua inicianiliazição
     bloco_inicial = 0
     for bloco in lista_blocos:
         latencia_total += latenciaAcessoBloco(bloco_inicial,bloco)
         bloco_inicial = bloco
     return latencia_total
 
-blocos = [1,9,1,9,12,20,4,20,4,3,20,0,1,8,1,10,20,10,10,20,25,1]
+print("insira abaixo os blocos que deseja acessar, separados por espaço: ")
+blocos = list(map(int, input().split(" ")))
 tempo = latenciaAcessoTotal(blocos)
 print(f"\nO tempo total latência foi: {tempo:.2f} ms")
 
