@@ -29,8 +29,6 @@ capacidade_disco = (setores_por_disco * bytes_por_setor) /1024 #Divisão para ob
 tamanho_bloco = bytes_por_setor
 blocos_por_trilha = setores_por_trilha
 #consideramos um disco cheio onde os blocos foram escritos sequencialmente na trilha, nesse caso: (0,1,2,3...719)
-#
-
 tempo_seek_adjascente = 6 #ms
 tempo_seek_avg = 77 #ms
 tempo_rotacao = 200 #ms
@@ -50,6 +48,7 @@ def latenciaAcessoBloco(blocoInicial, blocoDesejado,printResults):
         tempoIndividualBloco = tempoRotacaoDasTrails + tempo_seek_adjascente
     else:
         tempoIndividualBloco = tempoRotacaoDasTrails + tempo_seek_avg
+    tempoIndividualBloco += tempo_transferencia
     if printResults:
         print(f"O tempo de acesso do bloco {blocoDesejado} saindo do bloco {blocoInicial}"
             f" foi de {tempoIndividualBloco:.2f} ms")
