@@ -78,8 +78,6 @@ def findBlockTrail(bloco):
 def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
-tempo = latenciaAcessoBloco(1, 16)
-
 def latenciaAcessoTotal(lista_blocos):
     latencia_total = 0 
     bloco_inicial = 0
@@ -88,10 +86,8 @@ def latenciaAcessoTotal(lista_blocos):
         bloco_inicial = bloco
     return latencia_total
 
-blocos = [1,9,1,9,12,20,4,20,4,3]
+blocos = [1,9,1,9,12,20,4,20,4,3,20,0,1,8,1,10,20,10,10,20,25,1]
 tempo = latenciaAcessoTotal(blocos)
-print(f"O tempo total latência foi: {tempo:.2f} ms")
+print(f"\nO tempo total latência foi: {tempo:.2f} ms")
 
-# TODO: bug fix, insert blocks on entry
-# print("insira sequencia de blocos")
-# blocos = list(map(int, input().split(" ")))
+# TODO: access blocks by input
