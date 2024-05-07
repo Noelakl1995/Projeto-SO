@@ -82,18 +82,19 @@ def trailDifference(blocoAtual, blocoDesejado):
     return abs(findBlockTrail(blocoAtual) - findBlockTrail(blocoDesejado))
 
 def sortBySSTF(blocos, blocoInicial):
-    aux = []
-    while blocos:
+    aux = list(blocos)  # Faz uma cópia da lista original
+    lista_ordenada = []
+    while aux:
         min_latency = float('inf')
         toBeRemoved = None
-        for i in range(len(blocos)):
-            latency = latenciaAcessoBloco(blocoInicial, blocos[i],False)
+        for i in range(len(aux)):
+            latency = latenciaAcessoBloco(blocoInicial, aux[i], False)
             if latency < min_latency:
                 min_latency = latency
                 toBeRemoved = i
-        aux.append(blocos.pop(toBeRemoved))
-        blocoInicial = aux[-1]
-    return aux
+        lista_ordenada.append(aux.pop(toBeRemoved))
+        blocoInicial = lista_ordenada[-1]
+    return lista_ordenada
 
 def latenciaAcessoTotal(lista_blocos):
     latencia_total = 0 
@@ -105,18 +106,21 @@ def latenciaAcessoTotal(lista_blocos):
         bloco_inicial = bloco
     return latencia_total
 
+def gerarListaLatencias(lista_blocos):
+    lista_latencias = []
+    bloco_inicial = bloco_inicial_disco
+    lista_blocos = sortBySSTF(lista_blocos,bloco_inicial)
+    for bloco in lista_blocos:
+        lista_latencias.append(latenciaAcessoBloco(bloco_inicial,bloco,False))
+        bloco_inicial = bloco
+    return lista_latencias
 
 def gerarBlocos(numero_blocos):
     randomlist = random.choices(range(setores_por_disco), k = numero_blocos)
     return randomlist
 
 
-print("Insira abaixo os blocos que deseja acessar, separados por espaço:")
-#blocos = list(map(int, input().split()))
-blocos = "2 5 4 7 8 5 4 55 74 719 0 0 0 0 0 0 0 0 0 5 2 4 8 65 2 5 52 6 8 78 54 8 8 5 1 0 2 3 8 0"
-blocos = list(map(int, blocos.split()))
-
-blocos = gerarBlocos(10000)
+blocos = gerarBlocos(int(input("Digite a quantidade de blocos que voce quer gerar: ")))
 list_size = len(blocos)
 
 if any(bloco >= setores_por_disco for bloco in blocos):
@@ -124,17 +128,24 @@ if any(bloco >= setores_por_disco for bloco in blocos):
         f"\nMaior bloco possível: {setores_por_disco-1} ")
     exit()
 
-plt.scatter(range(list_size), blocos)
-desvio_padrao = np.std(blocos)
-tempo = latenciaAcessoTotal(blocos)
+if(list_size == 0):
+    print("lista vazia")
+    exit()
 
+
+tempo = latenciaAcessoTotal(blocos)
 print(f"\nO tempo total de latência foi: {tempo:.2f} ms")
 
+lista_Lat = gerarListaLatencias(blocos)
+maxLatencyValue = max(lista_Lat)
+
+#Criacao grafico
+plt.scatter(blocos, lista_Lat)
+plt.ylim(0, maxLatencyValue)
+plt.xlim(0, setores_por_disco)
+plt.text(0, maxLatencyValue * 0.9, f'Blocos acessados: {list_size}', color='blue', fontsize=10)
 media_tempo = tempo / list_size
 plt.axhline(y=media_tempo, color='r', linestyle='-')
-plt.text(list_size - 1, media_tempo, f'Média: {media_tempo:.2f}', color='r', fontsize=10)
-
-plt.axhline(y=media_tempo + desvio_padrao, color='g', linestyle='--')
-plt.text(list_size - 1, media_tempo + desvio_padrao, f'Desvio Padrão: {desvio_padrao:.2f}', color='g', fontsize=10)
+plt.text(setores_por_disco - 1, media_tempo, f'Média: {media_tempo:.2f}', color='r', fontsize=10)
 
 plt.show()
