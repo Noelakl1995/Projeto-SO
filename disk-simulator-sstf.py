@@ -1,3 +1,6 @@
+import random
+import matplotlib.pyplot as plt
+import numpy as np
 # Problema:
 #   Escreva um simulador de disco que permita indicar qual a latência de acesso
 #   para uma lista de blocos indicados como dados de entrada.
@@ -103,16 +106,35 @@ def latenciaAcessoTotal(lista_blocos):
     return latencia_total
 
 
+def gerarBlocos(numero_blocos):
+    randomlist = random.choices(range(setores_por_disco), k = numero_blocos)
+    return randomlist
+
 
 print("Insira abaixo os blocos que deseja acessar, separados por espaço:")
-blocos = list(map(int, input().split()))
-#bloco_teste = "2 5 4 7 8 5 4 55 74 719 0 0 0 0 0 0 0 0 0 5 2 4 8 65 2 5 52 6 8 78 54 8 8 5 1 0 2 3 8 0"
-#blocos = list(map(int, bloco_teste.split()))
+#blocos = list(map(int, input().split()))
+blocos = "2 5 4 7 8 5 4 55 74 719 0 0 0 0 0 0 0 0 0 5 2 4 8 65 2 5 52 6 8 78 54 8 8 5 1 0 2 3 8 0"
+blocos = list(map(int, blocos.split()))
+
+blocos = gerarBlocos(10000)
+list_size = len(blocos)
 
 if any(bloco >= setores_por_disco for bloco in blocos):
     print(f"Você tentou acessar um bloco que não existe no disco."
-          f"\nMaior bloco possível: {setores_por_disco-1} ")
+        f"\nMaior bloco possível: {setores_por_disco-1} ")
     exit()
 
+plt.scatter(range(list_size), blocos)
+desvio_padrao = np.std(blocos)
 tempo = latenciaAcessoTotal(blocos)
+
 print(f"\nO tempo total de latência foi: {tempo:.2f} ms")
+
+media_tempo = tempo / list_size
+plt.axhline(y=media_tempo, color='r', linestyle='-')
+plt.text(list_size - 1, media_tempo, f'Média: {media_tempo:.2f}', color='r', fontsize=10)
+
+plt.axhline(y=media_tempo + desvio_padrao, color='g', linestyle='--')
+plt.text(list_size - 1, media_tempo + desvio_padrao, f'Desvio Padrão: {desvio_padrao:.2f}', color='g', fontsize=10)
+
+plt.show()
