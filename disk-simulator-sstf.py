@@ -134,7 +134,8 @@ if(list_size == 0):
 
 
 tempo = latenciaAcessoTotal(blocos)
-print(f"\nO tempo total de latência foi: {tempo:.2f} ms")
+print(f"\nBlocos Gerados: {list_size}")
+print(f"O tempo total de latência foi: {tempo:.2f} ms")
 
 lista_Lat = gerarListaLatencias(blocos)
 maxLatencyValue = max(lista_Lat)
